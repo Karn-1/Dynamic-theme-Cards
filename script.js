@@ -1,4 +1,3 @@
-// ALL VARIABLES AND DOC SELECTIONS
 
 let addNote = document.querySelector("#add-note");
 let formContainer = document.querySelector(".form-container");
@@ -23,8 +22,6 @@ const purposeInput = form.querySelector(
   "input[placeholder='e.g., Quick appointment note']"
 );
 
-// const dele = document.querySelector(".delBtn")
-
 const categoryRadios = form.querySelectorAll("input[name='category']");
 
 const submitButton = form.querySelector(".submit-btn");
@@ -37,29 +34,24 @@ function saveToLocalStorage(obj) {
     oldTasks.push(obj);
     localStorage.setItem("tasks", JSON.stringify(oldTasks));
   }
-  //  when already task are there then push into it  
   else {
     let oldTasks = localStorage.getItem("tasks");
-    // string to original object 
     oldTasks = JSON.parse(oldTasks);
-    oldTasks.push(obj);  // now push into theh object 
+    oldTasks.push(obj); 
     localStorage.setItem("tasks", JSON.stringify(oldTasks));
   }
 }
 
-//  when click on + then shows the form and take the input 
 addNote.addEventListener("click", function () {
   formContainer.style.display = "initial";
 });
 
-//  when clickon the close dont show thte form 
 closeForm.addEventListener("click", function () {
   formContainer.style.display = "none";
 });
 
 form.addEventListener("submit", function (evt) {
   evt.preventDefault();
-  // spaces ko hata deta h trim 
   const imageUrl = imageUrlInput.value.trim();
   const fullName = fullNameInput.value.trim();
   const homeTown = homeTownInput.value.trim();
@@ -67,12 +59,10 @@ form.addEventListener("submit", function (evt) {
 
   let selected = false;
   categoryRadios.forEach(function (cat) {
-    // Means koi ek bhi selected then true 
     if (cat.checked) {
       selected = cat.value;
     }
   });
-  // Validation of the input the url and name and all after trim if blank then shows alert to enter the input 
 
   if (imageUrl === "") {
     alert("Please enter an Image URL.");
@@ -94,12 +84,10 @@ form.addEventListener("submit", function (evt) {
     return;
   }
 
-  // when no one is selected then select any one category 
   if (!selected) {
     alert("Please select a category");
     return;
   }
-  // save this object into the local storage 
   saveToLocalStorage({
     imageUrl,
     fullName,
@@ -107,44 +95,38 @@ form.addEventListener("submit", function (evt) {
     homeTown,
     selected,
   });
-  /// after getting the info from the form then just reset the all form 
   form.reset();
-  // just now dont show the form 
   formContainer.style.display = "none";
   showCards();
 });
 
-// TO show the CARDS
 function showCards() {
 
-  // as when form submit they call show Cards and this wiwl first remove all cards and then show again
   stack.innerHTML = "";
 
   let allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  // When no data to show show this meesage 
   if (allTasks.length === 0) {
     const emptyDiv = document.createElement("div");
     emptyDiv.style.display = "flex";
     emptyDiv.style.justifyContent = "center";
     emptyDiv.style.alignItems = "center";
-    emptyDiv.style.height = "150px"; // height so flex center
+    emptyDiv.style.height = "150px"; 
 
     const emptyMsg = document.createElement("div");
     emptyMsg.textContent = "No data available + to insert data ";
-    emptyMsg.classList.add("no-data"); // for CSS styling
+    emptyMsg.classList.add("no-data");
 
     emptyDiv.appendChild(emptyMsg);
     stack.appendChild(emptyDiv);
     applySavedTheme();
-    return; // Stop further rendering
+    return; 
   }
-  // When having the cards show them 
+   
   let copy = allTasks.slice();
   copy = copy.reverse();
   allTasks = copy;
 
   allTasks.forEach(function (task) {
-    // Create card container
     const card = document.createElement("div");
     card.classList.add("card");
     // Avatar image
@@ -154,12 +136,10 @@ function showCards() {
     avatar.classList.add("avatar");
     card.appendChild(avatar);
 
-    // Name
     const name = document.createElement("h2");
     name.textContent = task.fullName;
     card.appendChild(name);
 
-    // Info: Home town
     const hometownInfo = document.createElement("div");
     hometownInfo.classList.add("info");
 
@@ -172,7 +152,6 @@ function showCards() {
     hometownInfo.appendChild(hometownValue);
     card.appendChild(hometownInfo);
 
-    // Info: Bookings
     const bookingsInfo = document.createElement("div");
     bookingsInfo.classList.add("info");
 
@@ -203,18 +182,16 @@ function showCards() {
     del.classList.add("delBtn", "del");
     del.textContent = "Delete";
 
-    // adding the delete card feature 
-    // But the buttons don’t exist yet at that time — they’re created later inside showCards().
     del.addEventListener("click", function () {
       let allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-      if (allTasks.length === 0) return; // Nothing to delete
+      if (allTasks.length === 0) return; 
 
-      allTasks.pop(); // Remove the card we see
+      allTasks.pop(); 
 
-      localStorage.setItem("tasks", JSON.stringify(allTasks)); // Save updated list
-      showCards(); // Re-render cards
-      updateStack(); // Recalculate stack styles
+      localStorage.setItem("tasks", JSON.stringify(allTasks)); 
+      showCards(); 
+      updateStack(); 
     });
 
     // Append buttons
@@ -225,8 +202,7 @@ function showCards() {
     // Append buttonsDiv to card
     card.appendChild(buttonsDiv);
 
-    // Finally, add the card to the DOM (for example, inside a container)
-    document.querySelector(".stack").appendChild(card); // or any container of your choice
+    document.querySelector(".stack").appendChild(card); 
   });
 
   applySavedTheme();
@@ -234,7 +210,6 @@ function showCards() {
 }
 showCards();
 
-// ++++++++________________________________++++++++++++_____________---
 
 function updateStack() {
   const cards = document.querySelectorAll(".stack .card");
@@ -258,20 +233,16 @@ function updateStack() {
   }
 }
 
-//____________________________-------------------------________________
 
 upBtn.addEventListener("click", function () {
-  //  when up button click it will show the last ele 
   let lastChild = stack.lastElementChild;
   if (lastChild) {
-    //  last child ko first child se phela laga dega matlab now ye hoga first child ( last wla)
     stack.insertBefore(lastChild, stack.firstElementChild);
     // update
     updateStack();
   }
 });
 
-//  when click on the down make the  first ele child to the end of the stack 
 downBtn.addEventListener("click", function () {
   const firstChild = stack.firstElementChild;
   if (firstChild) {
@@ -281,7 +252,6 @@ downBtn.addEventListener("click", function () {
   }
 });
 
-//------------------------------------coloring------------
 let black = document.querySelector(".black");
 let purple = document.querySelector(".purple");
 let orange = document.querySelector(".orange");
@@ -336,21 +306,8 @@ function applySavedTheme() {
   });
 }
 
-// let tasks = ["Task A", "Task B", "Task C"];
-// Task C was added at last
-// Task A
-// Task B
-// Task C
-
-// it will appear at last instead of this at last we will make a copy and reverse it 
-//  then show to appears it at top 
-// let copy = tasks.slice(); // ["Task A", "Task B", "Task C"]
-// copy.reverse(); // ["Task C", "Task B", "Task A"]
-// Task C
-// Task B
-// Task A
-
-
+// For the random data to local storage and Display the card how it looks
+ 
 // localStorage.setItem("tasks", JSON.stringify([
 //   {
 //     imageUrl: "https://randomuser.me/api/portraits/men/65.jpg",
